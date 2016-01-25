@@ -18,6 +18,9 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           resolve: {
             quests: ['Quest', function (Quest) {
               return Quest.get();
+            }],
+            ip: ['ipService', function (ipService) {
+              return ipService.get();
             }]
           }
         })
@@ -55,7 +58,7 @@ angular.module('quest.controllers', [])
   .controller('QuestController', QuestController)
   .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', '$rootScope', 'quests', 'pouchService'];
+QuestController.$inject = ['$scope', '$rootScope', 'quests', 'ip', 'pouchService'];
 AdminController.$inject = ['$scope', '$rootScope', 'results', 'pouchService'];
 
 /**
@@ -75,20 +78,21 @@ Result.$inject = ['$q', 'pouchService'];
  */
 angular.module('quest.services', [])
 
-  .service('pouchService', pouchService);
+  .service('pouchService', pouchService)
+  .service('ipService', ipService);
 
 pouchService.$inject = [];
+ipService.$inject = ['$q', '$http'];
 
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, quests, pouchService) {
+function QuestController ($scope, $rootScope, quests, ip, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
-  localDB.info().then(function (info) {
-    console.log(info);
-  });
+
+  $scope.ip = ip;
 
   localDB.allDocs({
     include_docs: true,
@@ -99,11 +103,10 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
     console.log(err);
   });
 
+  $scope.lang = 'English';
   $scope.results = [];
 
   $scope.quests = quests;
-
-  console.log(quests);
 
   $scope.questInitialized = false;
 
@@ -115,11 +118,11 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
   };
 
   $scope.submitQuest = function(){
-    console.log($scope.quests);
     if($scope.quests){
       localDB.post({
         quests: $scope.quests,
-        gender: $scope.gender
+        gender: $scope.gender,
+        ip: $scope.ip.city + ', ' + $scope.ip.country
       }).then(function(response) {
         console.log(response);
       }).catch(function (err) {
@@ -170,8 +173,6 @@ function AdminController ($scope, $rootScope, results, pouchService) {
       console.log(err);
     });
   }
-
-  //$scope.results = results;
 
 };
 
@@ -268,3 +269,25 @@ function pouchService () {
 
   this.localDB = new PouchDB('quest');
 }
+
+/**
+ * Created by decipher on 25.1.16.
+ */
+function ipService ($q, $http) {
+
+  'use strict';
+
+  return {
+    get: function () {
+      var result = $q.defer();
+      $http.get('http://ip-api.com/json')
+        .success(function (response) {
+          result.resolve(response);
+        })
+        .error(function (response) {
+          result.reject(response);
+        });
+      return result.promise;
+    }
+  }
+};

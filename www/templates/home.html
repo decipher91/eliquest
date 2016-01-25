@@ -1,5 +1,10 @@
 <ion-view view-title="Quest" hide-nav-bar="false" ng-cloak="">
   <md-content class="md-padding quest-container" layout="column">
+    <div flex align="right">
+      <md-switch ng-model="lang" ng-true-value="'English'" ng-false-value="'Russian'" class="md-warn">
+        {{lang}}
+      </md-switch>
+    </div>
     <h1>Welcome!</h1>
     <div flex align="center">
       <md-button class="md-primary md-raised" ng-click="initQuest()" ng-show="!questInitialized">

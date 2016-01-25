@@ -1,0 +1,22 @@
+$dark-primary-color: #FFA000;
+$primary-color: #ffc107;
+$light-primary-color: #FFECB3;
+$accent-color: rgb(49,27,146);
+$font-color: #212121;
+$secondary-text: #727272;
+$divider-color: #B6B6B6;
+
+body {
+  margin: 0;
+  height: 100%;
+  padding-top: 0;
+  font-family: Roboto, sans-serif
+}
+
+a, a:hover, a:focus {
+  text-decoration: none;
+}
+
+.bar.bar-stable {
+  background: $primary-color;
+}

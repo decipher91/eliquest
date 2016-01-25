@@ -18,6 +18,9 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           resolve: {
             quests: ['Quest', function (Quest) {
               return Quest.get();
+            }],
+            ip: ['ipService', function (ipService) {
+              return ipService.get();
             }]
           }
         })

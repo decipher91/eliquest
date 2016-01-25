@@ -42,7 +42,8 @@ gulp.task('concat', function() {
     './www/js/factories/Quest.js',
     './www/js/factories/Result.js',
 
-    './www/js/services/pouchService.js'
+    './www/js/services/pouchService.js',
+    './www/js/services/ipService.js'
   ])
     .pipe(concat('quest.js'))
     .pipe(gulp.dest('./www/js'))

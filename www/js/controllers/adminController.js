@@ -32,6 +32,4 @@ function AdminController ($scope, $rootScope, results, pouchService) {
     });
   }
 
-  //$scope.results = results;
-
 };

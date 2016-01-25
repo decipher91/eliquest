@@ -1,13 +1,12 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, quests, pouchService) {
+function QuestController ($scope, $rootScope, quests, ip, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
-  localDB.info().then(function (info) {
-    console.log(info);
-  });
+
+  $scope.ip = ip;
 
   localDB.allDocs({
     include_docs: true,
@@ -18,11 +17,10 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
     console.log(err);
   });
 
+  $scope.lang = 'English';
   $scope.results = [];
 
   $scope.quests = quests;
-
-  console.log(quests);
 
   $scope.questInitialized = false;
 
@@ -34,11 +32,11 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
   };
 
   $scope.submitQuest = function(){
-    console.log($scope.quests);
     if($scope.quests){
       localDB.post({
         quests: $scope.quests,
-        gender: $scope.gender
+        gender: $scope.gender,
+        ip: $scope.ip.city + ', ' + $scope.ip.country
       }).then(function(response) {
         console.log(response);
       }).catch(function (err) {

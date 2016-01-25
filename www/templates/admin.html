@@ -10,9 +10,10 @@
               <div>
                 <b>ID:</b> {{result.id}}
               </div>
+              <md-divider></md-divider>
               <div class="results-container" ng-repeat="doc in result.doc.quests" layout="column">
                 <div>
-                  <em>{{doc.title.en}}</em>
+                  <b>{{doc.title.en}}</b>
                 </div>
                 <div flex layout="row">
                   <div flex="80" layout layout-align="left">
@@ -22,11 +23,18 @@
                     <span class="md-body-1">{{doc.rate}}</span>
                   </div>
                 </div>
+                <md-divider></md-divider>
               </div>
+
+              <md-divider></md-divider>
 
               <div flex>
                 <b>Gender:</b> {{result.doc.gender}}
               </div>
+              <div flex>
+                <b>Location:</b> {{result.doc.ip}}
+              </div>
+              <md-divider></md-divider>
 
               <div flex align="center">
                 <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)">
