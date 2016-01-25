@@ -1,0 +1,14 @@
+{
+  "name": "quest-ionic",
+  "app_id": "",
+  "gulpStartupTasks": [
+    "sass",
+    "concat",
+    "watch",
+    "watchjs"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}
