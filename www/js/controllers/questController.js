@@ -6,7 +6,7 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
 
   var localDB = pouchService.localDB;
 
-  $scope.ip = ip;
+  //$scope.ip = ip;
 
   localDB.allDocs({
     include_docs: true,
