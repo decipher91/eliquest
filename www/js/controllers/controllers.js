@@ -3,6 +3,8 @@
  */
 angular.module('quest.controllers', [])
 
-  .controller('QuestController', QuestController);
+  .controller('QuestController', QuestController)
+  .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', '$rootScope'];
+QuestController.$inject = ['$scope', '$rootScope', 'quests', 'pouchService'];
+AdminController.$inject = ['$scope', '$rootScope', 'results', 'pouchService'];

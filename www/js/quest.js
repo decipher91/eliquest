@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'ngMaterial' ])
+angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial' ])
 
   .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider',
     function ($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider) {
@@ -16,8 +16,19 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           controller: 'QuestController',
           cache: false,
           resolve: {
-            challenge: ['Quest', function (Quest) {
+            quests: ['Quest', function (Quest) {
               return Quest.get();
+            }]
+          }
+        })
+        .state('admin', {
+          url: '/admin',
+          templateUrl: 'templates/admin.html',
+          controller: 'AdminController',
+          cache: false,
+          resolve: {
+            results: ['Result', function (Result) {
+              return Result.get();
             }]
           }
         });
@@ -41,25 +52,54 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
  */
 angular.module('quest.controllers', [])
 
-  .controller('QuestController', QuestController);
+  .controller('QuestController', QuestController)
+  .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', '$rootScope'];
+QuestController.$inject = ['$scope', '$rootScope', 'quests', 'pouchService'];
+AdminController.$inject = ['$scope', '$rootScope', 'results', 'pouchService'];
 
 /**
  * Created by decipher on 25.1.16.
  */
 angular.module('quest.factories', [])
 
-  .factory('Quest', Quest);
+  .factory('Quest', Quest)
+  .factory('Result', Result);
 
 
 Quest.$inject = [];
+Result.$inject = ['$q', 'pouchService'];
 
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, quests) {
+angular.module('quest.services', [])
+
+  .service('pouchService', pouchService);
+
+pouchService.$inject = [];
+
+/**
+ * Created by decipher on 25.1.16.
+ */
+function QuestController ($scope, $rootScope, quests, pouchService) {
   'use strict';
+
+  var localDB = pouchService.localDB;
+  localDB.info().then(function (info) {
+    console.log(info);
+  });
+
+  localDB.allDocs({
+    include_docs: true,
+    attachments: true
+  }).then(function (result) {
+    console.log(result);
+  }).catch(function (err) {
+    console.log(err);
+  });
+
+  $scope.results = [];
 
   $scope.quests = quests;
 
@@ -70,23 +110,70 @@ function QuestController ($scope, quests) {
   $scope.initQuest = function(){
     $scope.questInitialized = true;
 
-    $scope.questions = {
-      question1: {
-        rate: 5
-      },
-      question2: {
-        rate: 5
-      },
-      question3: {
-        rate: 5
-      }
-    }
+    $scope.questions = $scope.quests;
+    $scope.gender = 'Male';
   };
 
   $scope.submitQuest = function(){
-
+    console.log($scope.quests);
+    if($scope.quests){
+      localDB.post({
+        quests: $scope.quests,
+        gender: $scope.gender
+      }).then(function(response) {
+        console.log(response);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    } else {
+      alert('no answers provided');
+    }
   };
+
+  $scope.$on('add', function(event, quest) {
+    console.log(quest);
+    $scope.results.push(quest);
+    console.log($scope.results);
+  });
 }
+
+/**
+ * Created by decipher on 25.1.16.
+ */
+function AdminController ($scope, $rootScope, results, pouchService) {
+  'use strict';
+
+  var localDB = pouchService.localDB;
+
+  $scope.refresh = function(){
+    localDB.allDocs({
+      include_docs: true,
+      attachments: true
+    }).then(function (result) {
+      console.log(result.rows);
+      $scope.results = result.rows;
+      $scope.$apply();
+    }).catch(function (err) {
+      console.log(err);
+    });
+  };
+
+  $scope.refresh();
+
+  $scope.remove = function(id){
+    localDB.get(id).then(function(doc) {
+      return localDB.remove(doc);
+    }).then(function (result) {
+      console.log(result);
+      $scope.refresh();
+    }).catch(function (err) {
+      console.log(err);
+    });
+  }
+
+  //$scope.results = results;
+
+};
 
 /**
  * Created by decipher on 25.1.16.
@@ -95,38 +182,89 @@ function Quest() {
 
   'use strict';
 
+  var quests = [
+    {
+      id: 'question1',
+      title: {
+        en: 'Question 1',
+        ru: 'Вопрос 1'
+      },
+      text: {
+        en: 'How do you rate your English skills?',
+        ru: 'Как вы оцениваете свой уровень английского языка?'
+      },
+      rate: '5'
+
+    },
+    {
+      id: 'question2',
+      title: {
+        en: 'Question 2',
+        ru: 'Вопрос 2'
+      },
+      text: {
+        en: 'How do you rate your HTML5 skills?',
+        ru: 'Как вы оцениваете свои знания HTML5?'
+      },
+      rate: '5'
+
+    },
+    {
+      id: 'question3',
+      title: {
+        en: 'Question 3',
+        ru: 'Вопрос 3'
+      },
+      text: {
+        en: 'How do you rate your CSS3 skills?',
+        ru: 'Как вы оцениваете свои знания CSS3?'
+      },
+      rate: '5'
+
+    }
+  ];
+
   return {
     get: function () {
-      var quests = [
-        {
-          id: 'question1',
-          title: {
-            en: 'How do you rate your English skills?',
-            ru: 'Как вы оцениваете свой уровень английского языка?'
-          },
-          rate: '5'
 
-        },
-        {
-          id: 'question2',
-          title: {
-            en: 'How do you rate your HTML5 skills?',
-            ru: 'Как вы оцениваете свои знания HTML5?'
-          },
-          rate: '5'
-
-        }
-        {
-          id: 'question3',
-          title: {
-            en: 'How do you rate your CSS3 skills?',
-            ru: 'Как вы оцениваете свои знания CSS3?'
-          },
-          rate: '5'
-
-        }
-      ];
+      console.log(quests);
       return quests;
     }
   }
 };
+
+/**
+ * Created by decipher on 25.1.16.
+ */
+function Result($q, pouchService) {
+
+  'use strict';
+
+  var localDB = pouchService.localDB;
+
+  return {
+    get: function () {
+      var result = $q.defer();
+
+      localDB.allDocs({
+        include_docs: true,
+        attachments: true
+      }).then(function (response) {
+        console.log(response);
+        result.resolve(response);
+      }).catch(function (err) {
+        result.reject(err);
+      });
+    }
+  }
+};
+
+/**
+ * Created by decipher on 25.1.16.
+ */
+function pouchService () {
+
+  'use strict';
+
+  this.localDB = new PouchDB('quest');
+}

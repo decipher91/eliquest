@@ -8,26 +8,26 @@
     </div>
 
     <div class="questions-container" flex align="row" ng-show="questInitialized">
-      <md-card>
+      <md-card ng-repeat="question in questions">
         <md-card-title>
           <md-card-title-text>
-            <span class="md-headline">Question 1</span>
+            <span class="md-headline">{{question.title.en}}</span>
           </md-card-title-text>
         </md-card-title>
         <md-card-content>
           <div layout>
             <div flex="80" layout layout-align="left">
-              <span class="md-body-1">How do you rate your English skills?</span>
+              <span class="md-body-1">{{question.text.en}}</span>
             </div>
             <div flex="20" layout layout-align="right">
-              <span class="md-body-1">{{questions.question1.rate}}</span>
+              <span class="md-body-1">{{question.rate}}</span>
             </div>
           </div>
           <div layout>
             <div flex="10" layout layout-align="center center">
               <span class="md-body-1">1</span>
             </div>
-            <md-slider flex md-discrete ng-model="question.question1.rate" step="1" min="1" max="10" aria-label="rating">
+            <md-slider flex md-discrete ng-model="question.rate" step="1" min="1" max="10" aria-label="rating">
             </md-slider>
             <div flex="10" layout layout-align="center center">
               <span class="md-body-1">10</span>
@@ -39,84 +39,14 @@
       <md-card>
         <md-card-title>
           <md-card-title-text>
-            <span class="md-headline">Question 2</span>
+            <span class="md-headline">Gender</span>
           </md-card-title-text>
         </md-card-title>
         <md-card-content>
-          <div layout>
-            <div flex="80" layout layout-align="left">
-              <span class="md-body-1">How do you rate your HTML skills?</span>
-            </div>
-            <div flex="20" layout layout-align="right">
-              <span class="md-body-1">{{questions.question2.rate}}</span>
-            </div>
-          </div>
-          <div layout>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">1</span>
-            </div>
-            <md-slider flex md-discrete ng-model="question.question2.rate" step="1" min="1" max="10" aria-label="rating">
-            </md-slider>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">10</span>
-            </div>
-          </div>
-        </md-card-content>
-      </md-card>
-
-      <md-card>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">Question 3</span>
-          </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-          <div layout>
-            <div flex="80" layout layout-align="left">
-              <span class="md-body-1">How do you rate your CSS skills?</span>
-            </div>
-            <div flex="20" layout layout-align="right">
-              <span class="md-body-1">{{questions.question3.rate}}</span>
-            </div>
-          </div>
-          <div layout>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">1</span>
-            </div>
-            <md-slider flex md-discrete ng-model="question.question3.rate" step="1" min="1" max="10" aria-label="rating">
-            </md-slider>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">10</span>
-            </div>
-          </div>
-        </md-card-content>
-      </md-card>
-
-      <md-card>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">Question 3</span>
-          </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-          <div layout>
-            <div flex="80" layout layout-align="left">
-              <span class="md-body-1">How do you rate your CSS skills?</span>
-            </div>
-            <div flex="20" layout layout-align="right">
-              <span class="md-body-1">{{questions.question3.rate}}</span>
-            </div>
-          </div>
-          <div layout>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">1</span>
-            </div>
-            <md-slider flex md-discrete ng-model="question.question3.rate" step="1" min="1" max="10" aria-label="rating">
-            </md-slider>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">10</span>
-            </div>
-          </div>
+          <md-radio-group ng-model="gender">
+            <md-radio-button value="Male" class="md-primary">Male</md-radio-button>
+            <md-radio-button value="Female">Female</md-radio-button>
+          </md-radio-group>
         </md-card-content>
       </md-card>
 

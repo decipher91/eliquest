@@ -1,8 +1,24 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, quests) {
+function QuestController ($scope, $rootScope, quests, pouchService) {
   'use strict';
+
+  var localDB = pouchService.localDB;
+  localDB.info().then(function (info) {
+    console.log(info);
+  });
+
+  localDB.allDocs({
+    include_docs: true,
+    attachments: true
+  }).then(function (result) {
+    console.log(result);
+  }).catch(function (err) {
+    console.log(err);
+  });
+
+  $scope.results = [];
 
   $scope.quests = quests;
 
@@ -13,20 +29,29 @@ function QuestController ($scope, quests) {
   $scope.initQuest = function(){
     $scope.questInitialized = true;
 
-    $scope.questions = {
-      question1: {
-        rate: 5
-      },
-      question2: {
-        rate: 5
-      },
-      question3: {
-        rate: 5
-      }
-    }
+    $scope.questions = $scope.quests;
+    $scope.gender = 'Male';
   };
 
   $scope.submitQuest = function(){
-
+    console.log($scope.quests);
+    if($scope.quests){
+      localDB.post({
+        quests: $scope.quests,
+        gender: $scope.gender
+      }).then(function(response) {
+        console.log(response);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    } else {
+      alert('no answers provided');
+    }
   };
+
+  $scope.$on('add', function(event, quest) {
+    console.log(quest);
+    $scope.results.push(quest);
+    console.log($scope.results);
+  });
 }

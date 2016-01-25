@@ -1,0 +1,50 @@
+<ion-view view-title="Quest" hide-nav-bar="false" ng-cloak="">
+  <ion-content>
+    <md-content class="md-padding quest-container" layout="column">
+      <h1>Current Results</h1>
+
+      <div class="questions-container" flex align="row" ng-show="results.length">
+        <md-card ng-repeat="result in results">
+          <md-card-content>
+            <div layout="column">
+              <div>
+                <b>ID:</b> {{result.id}}
+              </div>
+              <div class="results-container" ng-repeat="doc in result.doc.quests" layout="column">
+                <div>
+                  <em>{{doc.title.en}}</em>
+                </div>
+                <div flex layout="row">
+                  <div flex="80" layout layout-align="left">
+                    <span class="md-body-1">{{doc.text.en}}</span>
+                  </div>
+                  <div flex="20" layout layout-align="right">
+                    <span class="md-body-1">{{doc.rate}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div flex>
+                <b>Gender:</b> {{result.doc.gender}}
+              </div>
+
+              <div flex align="center">
+                <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)">
+                  Remove
+                </md-button>
+              </div>
+
+            </div>
+          </md-card-content>
+        </md-card>
+
+        <div flex align="center">
+          <md-button class="md-primary md-raised" ng-click="refresh()">
+            Refresh
+          </md-button>
+        </div>
+      </div>
+
+    </md-content>
+  </ion-content>
+</ion-view>

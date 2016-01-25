@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'ngMaterial' ])
+angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial' ])
 
   .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider',
     function ($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider) {
@@ -16,8 +16,19 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           controller: 'QuestController',
           cache: false,
           resolve: {
-            challenge: ['Quest', function (Quest) {
+            quests: ['Quest', function (Quest) {
               return Quest.get();
+            }]
+          }
+        })
+        .state('admin', {
+          url: '/admin',
+          templateUrl: 'templates/admin.html',
+          controller: 'AdminController',
+          cache: false,
+          resolve: {
+            results: ['Result', function (Result) {
+              return Result.get();
             }]
           }
         });

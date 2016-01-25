@@ -34,10 +34,15 @@ gulp.task('concat', function() {
 
     './www/js/controllers/controllers.js',
     './www/js/factories/factories.js',
+    './www/js/services/services.js',
 
     './www/js/controllers/questController.js',
+    './www/js/controllers/adminController.js',
 
-    './www/js/factories/Quest.js'
+    './www/js/factories/Quest.js',
+    './www/js/factories/Result.js',
+
+    './www/js/services/pouchService.js'
   ])
     .pipe(concat('quest.js'))
     .pipe(gulp.dest('./www/js'))
