@@ -8,7 +8,7 @@ function ipService ($q, $http) {
   return {
     get: function () {
       var result = $q.defer();
-      $http.get('http://ip-api.com/json')
+      $http.get('https://ip-api.com/json')
         .success(function (response) {
           result.resolve(response);
         })
