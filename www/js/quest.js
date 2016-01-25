@@ -18,9 +18,6 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           resolve: {
             quests: ['Quest', function (Quest) {
               return Quest.get();
-            }],
-            ip: ['ipService', function (ipService) {
-              return ipService.get();
             }]
           }
         })
@@ -58,7 +55,7 @@ angular.module('quest.controllers', [])
   .controller('QuestController', QuestController)
   .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', '$rootScope', 'quests', 'ip', 'pouchService'];
+QuestController.$inject = ['$scope', '$rootScope', 'quests', 'pouchService'];
 AdminController.$inject = ['$scope', '$rootScope', 'results', 'pouchService'];
 
 /**
@@ -87,7 +84,7 @@ ipService.$inject = ['$q', '$http'];
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, quests, ip, pouchService) {
+function QuestController ($scope, $rootScope, quests, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
@@ -121,8 +118,8 @@ function QuestController ($scope, $rootScope, quests, ip, pouchService) {
     if($scope.quests){
       localDB.post({
         quests: $scope.quests,
-        gender: $scope.gender,
-        ip: $scope.ip.city + ', ' + $scope.ip.country
+        gender: $scope.gender
+        //ip: $scope.ip.city + ', ' + $scope.ip.country
       }).then(function(response) {
         console.log(response);
       }).catch(function (err) {
