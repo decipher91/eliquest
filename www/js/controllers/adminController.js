@@ -6,6 +6,8 @@ function AdminController ($scope, $rootScope, results, pouchService) {
 
   var localDB = pouchService.localDB;
 
+  $scope.lang = 'English';
+
   $scope.refresh = function(){
     localDB.allDocs({
       include_docs: true,

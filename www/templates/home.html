@@ -1,67 +1,77 @@
 <ion-view view-title="Quest" hide-nav-bar="false" ng-cloak="">
-  <md-content class="md-padding quest-container" layout="column">
-    <div flex align="right">
-      <md-switch ng-model="lang" ng-true-value="'English'" ng-false-value="'Russian'" class="md-warn">
-        {{lang}}
-      </md-switch>
-    </div>
-    <h1>Welcome!</h1>
-    <div flex align="center">
-      <md-button class="md-primary md-raised" ng-click="initQuest()" ng-show="!questInitialized">
-        Start Quest
-      </md-button>
-    </div>
-
-    <div class="questions-container" flex align="row" ng-show="questInitialized">
-      <md-card ng-repeat="question in questions">
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">{{question.title.en}}</span>
-          </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-          <div layout>
-            <div flex="80" layout layout-align="left">
-              <span class="md-body-1">{{question.text.en}}</span>
-            </div>
-            <div flex="20" layout layout-align="right">
-              <span class="md-body-1">{{question.rate}}</span>
-            </div>
-          </div>
-          <div layout>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">1</span>
-            </div>
-            <md-slider flex md-discrete ng-model="question.rate" step="1" min="1" max="10" aria-label="rating">
-            </md-slider>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">10</span>
-            </div>
-          </div>
-        </md-card-content>
-      </md-card>
-
-      <md-card>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">Gender</span>
-          </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-          <md-radio-group ng-model="gender">
-            <md-radio-button value="Male" class="md-primary">Male</md-radio-button>
-            <md-radio-button value="Female">Female</md-radio-button>
-          </md-radio-group>
-        </md-card-content>
-      </md-card>
-
+  <ion-content>
+    <md-content class="md-padding quest-container" layout="column">
+      <div flex align="right">
+        <md-switch ng-model="lang" ng-true-value="'English'" ng-false-value="'Russian'" class="md-warn">
+          {{lang}}
+        </md-switch>
+      </div>
+      <h1>Welcome!</h1>
       <div flex align="center">
-        <md-button class="md-primary md-raised" ng-click="submitQuest()">
-          Submit
+        <md-button class="md-primary md-raised" ng-click="initQuest()" ng-show="!questInitialized" ng-if="lang==='English'">
+          Start Quest
+        </md-button>
+        <md-button class="md-primary md-raised" ng-click="initQuest()" ng-show="!questInitialized" ng-if="lang==='Russian'">
+          Начать
         </md-button>
       </div>
-    </div>
 
-  </md-content>
+      <div class="questions-container" flex align="row" ng-show="questInitialized">
+        <md-card ng-repeat="question in questions">
+          <md-card-title>
+            <md-card-title-text>
+              <span class="md-headline" ng-if="lang==='English'">{{question.title.en}}</span>
+              <span class="md-headline" ng-if="lang==='Russian'">{{question.title.ru}}</span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <div layout>
+              <div flex="80" layout layout-align="left">
+                <span class="md-body-1" ng-if="lang==='English'">{{question.text.en}}</span>
+                <span class="md-body-1" ng-if="lang==='Russian'">{{question.text.ru}}</span>
+              </div>
+              <div flex="20" layout layout-align="right">
+                <span class="md-body-1">{{question.rate}}</span>
+              </div>
+            </div>
+            <div layout>
+              <div flex="10" layout layout-align="center center">
+                <span class="md-body-1">1</span>
+              </div>
+              <md-slider flex md-discrete ng-model="question.rate" step="1" min="1" max="10" aria-label="rating">
+              </md-slider>
+              <div flex="10" layout layout-align="center center">
+                <span class="md-body-1">10</span>
+              </div>
+            </div>
+          </md-card-content>
+        </md-card>
 
+        <md-card>
+          <md-card-title>
+            <md-card-title-text>
+              <span class="md-headline" ng-if="lang==='English'">Gender</span>
+              <span class="md-headline" ng-if="lang==='Russian'">Пол</span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <md-radio-group ng-model="gender">
+              <md-radio-button value="Male">Male</md-radio-button>
+              <md-radio-button value="Female">Female</md-radio-button>
+            </md-radio-group>
+          </md-card-content>
+        </md-card>
+
+        <div flex align="center">
+          <md-button class="md-primary md-raised" ng-click="submitQuest()" ng-if="lang==='English'">
+            Submit
+          </md-button>
+          <md-button class="md-primary md-raised" ng-click="submitQuest()" ng-if="lang==='Russian'">
+            Отправить
+          </md-button>
+        </div>
+      </div>
+    </md-content>
+
+  </ion-content>
 </ion-view>

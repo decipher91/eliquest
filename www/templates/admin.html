@@ -1,6 +1,11 @@
 <ion-view view-title="Quest" hide-nav-bar="false" ng-cloak="">
   <ion-content>
     <md-content class="md-padding quest-container" layout="column">
+      <div flex align="right">
+        <md-switch ng-model="lang" ng-true-value="'English'" ng-false-value="'Russian'" class="md-warn">
+          {{lang}}
+        </md-switch>
+      </div>
       <h1>Current Results</h1>
 
       <div class="questions-container" flex align="row" ng-show="results.length">
@@ -12,12 +17,16 @@
               </div>
               <md-divider></md-divider>
               <div class="results-container" ng-repeat="doc in result.doc.quests" layout="column">
-                <div>
+                <div ng-if="lang==='English'">
                   <b>{{doc.title.en}}</b>
+                </div>
+                <div ng-if="lang==='Russian'">
+                  <b>{{doc.title.ru}}</b>
                 </div>
                 <div flex layout="row">
                   <div flex="80" layout layout-align="left">
-                    <span class="md-body-1">{{doc.text.en}}</span>
+                    <span class="md-body-1" ng-if="lang==='English'">{{doc.text.en}}</span>
+                    <span class="md-body-1" ng-if="lang==='Russian'">{{doc.text.ru}}</span>
                   </div>
                   <div flex="20" layout layout-align="right">
                     <span class="md-body-1">{{doc.rate}}</span>
@@ -37,8 +46,11 @@
               <md-divider></md-divider>
 
               <div flex align="center">
-                <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)">
+                <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)" ng-if="lang==='English'">
                   Remove
+                </md-button>
+                <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)" ng-if="lang==='Russian'">
+                  Удалить
                 </md-button>
               </div>
 
@@ -47,8 +59,11 @@
         </md-card>
 
         <div flex align="center">
-          <md-button class="md-primary md-raised" ng-click="refresh()">
+          <md-button class="md-primary md-raised" ng-click="refresh()" ng-if="lang==='English'">
             Refresh
+          </md-button>
+          <md-button class="md-primary md-raised" ng-click="refresh()" ng-if="lang==='Russian'">
+            Обновить
           </md-button>
         </div>
       </div>

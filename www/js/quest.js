@@ -122,6 +122,9 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
         //ip: $scope.ip.city + ', ' + $scope.ip.country
       }).then(function(response) {
         console.log(response);
+        $scope.quests = quests;
+        $scope.questInitialized = false;
+        $scope.gender = 'Male';
       }).catch(function (err) {
         console.log(err);
       });
@@ -144,6 +147,8 @@ function AdminController ($scope, $rootScope, results, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
+
+  $scope.lang = 'English';
 
   $scope.refresh = function(){
     localDB.allDocs({
