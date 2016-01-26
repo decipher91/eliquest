@@ -1,11 +1,11 @@
 {
-  "name": "quest-ionic",
+  "name": "Eliquest",
   "app_id": "",
   "gulpStartupTasks": [
     "sass",
     "concat",
-    "watch",
-    "watchjs"
+    "watchjs",
+    "watch"
   ],
   "watchPatterns": [
     "www/**/*",

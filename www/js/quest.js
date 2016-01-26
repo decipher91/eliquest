@@ -160,6 +160,7 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
+  var remoteDB = pouchService.remoteDB;
 
   console.log(local);
   console.log(remote);
@@ -179,7 +180,20 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
     });
   };
 
-  $scope.refresh();
+  $scope.refreshRemote = function(){
+    remoteDB.allDocs({
+      include_docs: true,
+      attachments: true
+    }).then(function (result) {
+      console.log(result.rows);
+      $scope.results = result.rows;
+      $scope.$apply();
+    }).catch(function (err) {
+      console.log(err);
+    });
+  };
+
+  $scope.refreshRemote();
 
   $scope.remove = function(id){
     localDB.get(id).then(function(doc) {
