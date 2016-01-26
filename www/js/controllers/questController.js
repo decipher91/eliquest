@@ -1,12 +1,12 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, quests, pouchService) {
+function QuestController ($scope, $rootScope, quests, ip, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
 
-  //$scope.ip = ip;
+  $scope.ip = ip;
 
   localDB.allDocs({
     include_docs: true,
@@ -35,8 +35,8 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
     if($scope.quests){
       localDB.post({
         quests: $scope.quests,
-        gender: $scope.gender
-        //ip: $scope.ip.city + ', ' + $scope.ip.country
+        gender: $scope.gender,
+        ip: $scope.ip.city + ', ' + $scope.ip.country
       }).then(function(response) {
         console.log(response);
         $scope.quests = quests;

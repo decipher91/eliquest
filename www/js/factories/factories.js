@@ -7,5 +7,5 @@ angular.module('quest.factories', [])
   .factory('Result', Result);
 
 
-Quest.$inject = [];
+Quest.$inject = ['$q', '$http'];
 Result.$inject = ['$q', 'pouchService'];

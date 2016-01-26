@@ -18,6 +18,9 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           resolve: {
             quests: ['Quest', function (Quest) {
               return Quest.get();
+            }],
+            ip: ['ipService', function (ipService) {
+              return ipService.get();
             }]
           }
         })
@@ -55,7 +58,7 @@ angular.module('quest.controllers', [])
   .controller('QuestController', QuestController)
   .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', '$rootScope', 'quests', 'pouchService'];
+QuestController.$inject = ['$scope', '$rootScope', 'quests', 'ip', 'pouchService'];
 AdminController.$inject = ['$scope', '$rootScope', 'results', 'pouchService'];
 
 /**
@@ -67,7 +70,7 @@ angular.module('quest.factories', [])
   .factory('Result', Result);
 
 
-Quest.$inject = [];
+Quest.$inject = ['$q', '$http'];
 Result.$inject = ['$q', 'pouchService'];
 
 /**
@@ -84,12 +87,12 @@ ipService.$inject = ['$q', '$http'];
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, quests, pouchService) {
+function QuestController ($scope, $rootScope, quests, ip, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
 
-  //$scope.ip = ip;
+  $scope.ip = ip;
 
   localDB.allDocs({
     include_docs: true,
@@ -118,8 +121,8 @@ function QuestController ($scope, $rootScope, quests, pouchService) {
     if($scope.quests){
       localDB.post({
         quests: $scope.quests,
-        gender: $scope.gender
-        //ip: $scope.ip.city + ', ' + $scope.ip.country
+        gender: $scope.gender,
+        ip: $scope.ip.city + ', ' + $scope.ip.country
       }).then(function(response) {
         console.log(response);
         $scope.quests = quests;
@@ -181,57 +184,22 @@ function AdminController ($scope, $rootScope, results, pouchService) {
 /**
  * Created by decipher on 25.1.16.
  */
-function Quest() {
+function Quest($q, $http) {
 
   'use strict';
 
-  var quests = [
-    {
-      id: 'question1',
-      title: {
-        en: 'Question 1',
-        ru: 'Вопрос 1'
-      },
-      text: {
-        en: 'How do you rate your English skills?',
-        ru: 'Как вы оцениваете свой уровень английского языка?'
-      },
-      rate: '5'
-
-    },
-    {
-      id: 'question2',
-      title: {
-        en: 'Question 2',
-        ru: 'Вопрос 2'
-      },
-      text: {
-        en: 'How do you rate your HTML5 skills?',
-        ru: 'Как вы оцениваете свои знания HTML5?'
-      },
-      rate: '5'
-
-    },
-    {
-      id: 'question3',
-      title: {
-        en: 'Question 3',
-        ru: 'Вопрос 3'
-      },
-      text: {
-        en: 'How do you rate your CSS3 skills?',
-        ru: 'Как вы оцениваете свои знания CSS3?'
-      },
-      rate: '5'
-
-    }
-  ];
-
   return {
     get: function () {
-
-      console.log(quests);
-      return quests;
+      var result = $q.defer();
+      $http({method: 'GET', url: 'tasks.json'})
+        .success(function (response) {
+          console.log(response);
+          result.resolve(response);
+        })
+        .error(function (response) {
+          result.reject(response);
+        });
+      return result.promise;
     }
   }
 };
@@ -282,7 +250,7 @@ function ipService ($q, $http) {
   return {
     get: function () {
       var result = $q.defer();
-      $http.get('https://ip-api.com/json')
+      $http.get('http://ip-api.com/json')
         .success(function (response) {
           result.resolve(response);
         })
