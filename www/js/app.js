@@ -3,7 +3,13 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial' ])
+angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial'])
+
+  .run(['pouchService',function (pouchService) {
+    var localDB = pouchService.localDB;
+    var remoteDB = pouchService.remoteDB;
+    localDB.sync(remoteDB, {live: true});
+  }])
 
   .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider',
     function ($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider) {
@@ -30,8 +36,11 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           controller: 'AdminController',
           cache: false,
           resolve: {
-            results: ['Result', function (Result) {
-              return Result.get();
+            local: ['Result', function (Result) {
+              return Result.getLocal();
+            }],
+            remote: ['Result', function (Result) {
+              return Result.getRemote();
             }]
           }
         });

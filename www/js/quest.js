@@ -3,7 +3,13 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial' ])
+angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial'])
+
+  .run(['pouchService',function (pouchService) {
+    var localDB = pouchService.localDB;
+    var remoteDB = pouchService.remoteDB;
+    localDB.sync(remoteDB, {live: true});
+  }])
 
   .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider',
     function ($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider) {
@@ -30,8 +36,11 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           controller: 'AdminController',
           cache: false,
           resolve: {
-            results: ['Result', function (Result) {
-              return Result.get();
+            local: ['Result', function (Result) {
+              return Result.getLocal();
+            }],
+            remote: ['Result', function (Result) {
+              return Result.getRemote();
             }]
           }
         });
@@ -59,7 +68,7 @@ angular.module('quest.controllers', [])
   .controller('AdminController', AdminController);
 
 QuestController.$inject = ['$scope', '$rootScope', 'quests', 'ip', 'pouchService'];
-AdminController.$inject = ['$scope', '$rootScope', 'results', 'pouchService'];
+AdminController.$inject = ['$scope', '$rootScope', 'local', 'remote', 'pouchService'];
 
 /**
  * Created by decipher on 25.1.16.
@@ -91,6 +100,7 @@ function QuestController ($scope, $rootScope, quests, ip, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
+  var remoteDB = pouchService.remoteDB;
 
   $scope.ip = ip;
 
@@ -146,10 +156,13 @@ function QuestController ($scope, $rootScope, quests, ip, pouchService) {
 /**
  * Created by decipher on 25.1.16.
  */
-function AdminController ($scope, $rootScope, results, pouchService) {
+function AdminController ($scope, $rootScope, local, remote, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
+
+  console.log(local);
+  console.log(remote);
 
   $scope.lang = 'English';
 
@@ -212,12 +225,26 @@ function Result($q, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
+  var remoteDB = pouchService.remoteDB;
 
   return {
-    get: function () {
+    getLocal: function () {
       var result = $q.defer();
 
       localDB.allDocs({
+        include_docs: true,
+        attachments: true
+      }).then(function (response) {
+        console.log(response);
+        result.resolve(response);
+      }).catch(function (err) {
+        result.reject(err);
+      });
+    },
+    getRemote: function () {
+      var result = $q.defer();
+
+      remoteDB.allDocs({
         include_docs: true,
         attachments: true
       }).then(function (response) {
@@ -238,6 +265,7 @@ function pouchService () {
   'use strict';
 
   this.localDB = new PouchDB('quest');
+  this.remoteDB = new PouchDB("http://localhost:5984/quiz");
 }
 
 /**

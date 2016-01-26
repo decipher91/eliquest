@@ -5,6 +5,7 @@ function QuestController ($scope, $rootScope, quests, ip, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
+  var remoteDB = pouchService.remoteDB;
 
   $scope.ip = ip;
 

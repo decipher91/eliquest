@@ -1,10 +1,13 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function AdminController ($scope, $rootScope, results, pouchService) {
+function AdminController ($scope, $rootScope, local, remote, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
+
+  console.log(local);
+  console.log(remote);
 
   $scope.lang = 'English';
 

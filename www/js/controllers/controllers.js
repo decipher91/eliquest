@@ -7,4 +7,4 @@ angular.module('quest.controllers', [])
   .controller('AdminController', AdminController);
 
 QuestController.$inject = ['$scope', '$rootScope', 'quests', 'ip', 'pouchService'];
-AdminController.$inject = ['$scope', '$rootScope', 'results', 'pouchService'];
+AdminController.$inject = ['$scope', '$rootScope', 'local', 'remote', 'pouchService'];
