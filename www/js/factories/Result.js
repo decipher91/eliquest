@@ -16,7 +16,6 @@ function Result($q, pouchService) {
         include_docs: true,
         attachments: true
       }).then(function (response) {
-        console.log(response);
         result.resolve(response);
       }).catch(function (err) {
         result.reject(err);
@@ -29,7 +28,6 @@ function Result($q, pouchService) {
         include_docs: true,
         attachments: true
       }).then(function (response) {
-        console.log(response);
         result.resolve(response);
       }).catch(function (err) {
         result.reject(err);

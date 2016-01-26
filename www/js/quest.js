@@ -172,7 +172,6 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
       include_docs: true,
       attachments: true
     }).then(function (result) {
-      console.log(result.rows);
       $scope.results = result.rows;
       $scope.$apply();
     }).catch(function (err) {
@@ -185,7 +184,6 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
       include_docs: true,
       attachments: true
     }).then(function (result) {
-      console.log(result.rows);
       $scope.results = result.rows;
       $scope.$apply();
     }).catch(function (err) {
@@ -199,7 +197,6 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
     localDB.get(id).then(function(doc) {
       return localDB.remove(doc);
     }).then(function (result) {
-      console.log(result);
       $scope.refresh();
     }).catch(function (err) {
       console.log(err);
@@ -249,7 +246,6 @@ function Result($q, pouchService) {
         include_docs: true,
         attachments: true
       }).then(function (response) {
-        console.log(response);
         result.resolve(response);
       }).catch(function (err) {
         result.reject(err);
@@ -262,7 +258,6 @@ function Result($q, pouchService) {
         include_docs: true,
         attachments: true
       }).then(function (response) {
-        console.log(response);
         result.resolve(response);
       }).catch(function (err) {
         result.reject(err);

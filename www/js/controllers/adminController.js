@@ -17,7 +17,6 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
       include_docs: true,
       attachments: true
     }).then(function (result) {
-      console.log(result.rows);
       $scope.results = result.rows;
       $scope.$apply();
     }).catch(function (err) {
@@ -30,7 +29,6 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
       include_docs: true,
       attachments: true
     }).then(function (result) {
-      console.log(result.rows);
       $scope.results = result.rows;
       $scope.$apply();
     }).catch(function (err) {
@@ -44,7 +42,6 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
     localDB.get(id).then(function(doc) {
       return localDB.remove(doc);
     }).then(function (result) {
-      console.log(result);
       $scope.refresh();
     }).catch(function (err) {
       console.log(err);
