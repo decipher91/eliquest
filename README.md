@@ -11,18 +11,11 @@
 
 ### Start
 
-* Run
-
-     npm install
-      
-  and
-     
-     gulp start
-     
+* Run 'npm install' and 'gulp start'
      
 ### Questions
 
-*** www/tasks.json
+* www/tasks.json
 
 
 ### Behind the scenes
