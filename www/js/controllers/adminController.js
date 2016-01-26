@@ -6,10 +6,7 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
 
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
-
-  console.log(local);
-  console.log(remote);
-
+  
   $scope.lang = 'English';
 
   $scope.refresh = function(){
