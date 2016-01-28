@@ -10,7 +10,6 @@ function Quest($q, $http) {
       var result = $q.defer();
       $http({method: 'GET', url: 'tasks.json'})
         .success(function (response) {
-          console.log(response);
           result.resolve(response);
         })
         .error(function (response) {

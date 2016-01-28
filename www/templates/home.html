@@ -1,4 +1,4 @@
-<ion-view view-title="Quest" hide-nav-bar="false" ng-cloak="">
+<ion-view view-title="New Quiz" hide-nav-bar="false" ng-cloak="">
   <ion-content>
     <md-content class="md-padding quest-container" layout="column">
       <div flex align="right">
@@ -9,7 +9,7 @@
       <h1>Welcome!</h1>
       <div flex align="center">
         <md-button class="md-primary md-raised" ng-click="initQuest()" ng-show="!questInitialized" ng-if="lang==='English'">
-          Start Quest
+          Start Quiz
         </md-button>
         <md-button class="md-primary md-raised" ng-click="initQuest()" ng-show="!questInitialized" ng-if="lang==='Russian'">
           Начать
@@ -17,28 +17,28 @@
       </div>
 
       <div class="questions-container" flex align="row" ng-show="questInitialized">
-        <md-card ng-repeat="question in questions">
+        <md-card ng-repeat="task in tasks">
           <md-card-title>
             <md-card-title-text>
-              <span class="md-headline" ng-if="lang==='English'">{{question.title.en}}</span>
-              <span class="md-headline" ng-if="lang==='Russian'">{{question.title.ru}}</span>
+              <span class="md-headline" ng-if="lang==='English'">{{task.title.en}}</span>
+              <span class="md-headline" ng-if="lang==='Russian'">{{task.title.ru}}</span>
             </md-card-title-text>
           </md-card-title>
           <md-card-content>
             <div layout>
               <div flex="80" layout layout-align="left">
-                <span class="md-body-1" ng-if="lang==='English'">{{question.text.en}}</span>
-                <span class="md-body-1" ng-if="lang==='Russian'">{{question.text.ru}}</span>
+                <span class="md-body-1" ng-if="lang==='English'">{{task.text.en}}</span>
+                <span class="md-body-1" ng-if="lang==='Russian'">{{task.text.ru}}</span>
               </div>
               <div flex="20" layout layout-align="right">
-                <span class="md-body-1">{{question.rate}}</span>
+                <span class="md-body-1">{{task.rate}}</span>
               </div>
             </div>
             <div layout>
               <div flex="10" layout layout-align="center center">
                 <span class="md-body-1">1</span>
               </div>
-              <md-slider flex md-discrete ng-model="question.rate" step="1" min="1" max="10" aria-label="rating">
+              <md-slider flex md-discrete ng-model="task.rate" step="1" min="1" max="10" aria-label="rating">
               </md-slider>
               <div flex="10" layout layout-align="center center">
                 <span class="md-body-1">10</span>

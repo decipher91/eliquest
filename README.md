@@ -8,10 +8,14 @@
      sudo apt-get install npm
 
 * CouchDB - after installation go to http://localhost:5984 to test connection
+* Из любой директории выполнить
+     npm install -g add-cors-to-couchdb
+     add-cors-to-couchdb
+     npm install -g gulp
 
 ### Start
 
-* Run 'npm install' and 'gulp start'
+* Run 'npm start' из корневой директории проекта
      
 ### Questions
 

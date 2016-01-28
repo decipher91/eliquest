@@ -22,12 +22,12 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           controller: 'QuestController',
           cache: false,
           resolve: {
-            quests: ['Quest', function (Quest) {
+            tasks: ['Quest', function (Quest) {
               return Quest.get();
-            }],
-            ip: ['ipService', function (ipService) {
-              return ipService.get();
             }]
+            /*ip: ['ipService', function (ipService) {
+              return ipService.get();
+            }]*/
           }
         })
         .state('admin', {

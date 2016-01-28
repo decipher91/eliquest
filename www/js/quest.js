@@ -22,12 +22,12 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           controller: 'QuestController',
           cache: false,
           resolve: {
-            quests: ['Quest', function (Quest) {
+            tasks: ['Quest', function (Quest) {
               return Quest.get();
-            }],
-            ip: ['ipService', function (ipService) {
-              return ipService.get();
             }]
+            /*ip: ['ipService', function (ipService) {
+              return ipService.get();
+            }]*/
           }
         })
         .state('admin', {
@@ -67,7 +67,7 @@ angular.module('quest.controllers', [])
   .controller('QuestController', QuestController)
   .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', '$rootScope', 'quests', 'ip', 'pouchService'];
+QuestController.$inject = ['$scope', '$rootScope', 'tasks', 'pouchService'];
 AdminController.$inject = ['$scope', '$rootScope', 'local', 'remote', 'pouchService'];
 
 /**
@@ -96,13 +96,15 @@ ipService.$inject = ['$q', '$http'];
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, quests, ip, pouchService) {
+function QuestController ($scope, $rootScope, tasks, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
 
-  $scope.ip = ip;
+  //$scope.ip = ip;
+
+  console.log(tasks);
 
   localDB.allDocs({
     include_docs: true,
@@ -116,26 +118,23 @@ function QuestController ($scope, $rootScope, quests, ip, pouchService) {
   $scope.lang = 'English';
   $scope.results = [];
 
-  $scope.quests = quests;
+  $scope.tasks = tasks;
 
   $scope.questInitialized = false;
 
   $scope.initQuest = function(){
     $scope.questInitialized = true;
-
-    $scope.questions = $scope.quests;
     $scope.gender = 'Male';
   };
 
   $scope.submitQuest = function(){
-    if($scope.quests){
+    if($scope.tasks){
       localDB.post({
-        quests: $scope.quests,
-        gender: $scope.gender,
-        ip: $scope.ip.city + ', ' + $scope.ip.country
+        tasks: $scope.tasks,
+        gender: $scope.gender
+        //ip: $scope.ip.city + ', ' + $scope.ip.country
       }).then(function(response) {
-        console.log(response);
-        $scope.quests = quests;
+        $scope.tasks = tasks;
         $scope.questInitialized = false;
         $scope.gender = 'Male';
       }).catch(function (err) {
@@ -145,12 +144,6 @@ function QuestController ($scope, $rootScope, quests, ip, pouchService) {
       alert('no answers provided');
     }
   };
-
-  $scope.$on('add', function(event, quest) {
-    console.log(quest);
-    $scope.results.push(quest);
-    console.log($scope.results);
-  });
 }
 
 /**
@@ -161,7 +154,7 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
 
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
-  
+
   $scope.lang = 'English';
 
   $scope.refresh = function(){
@@ -214,7 +207,6 @@ function Quest($q, $http) {
       var result = $q.defer();
       $http({method: 'GET', url: 'tasks.json'})
         .success(function (response) {
-          console.log(response);
           result.resolve(response);
         })
         .error(function (response) {
