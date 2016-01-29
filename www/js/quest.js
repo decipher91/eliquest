@@ -139,7 +139,6 @@ function QuestController ($scope, $translate, $http, tasks, pouchService) {
   $http.get(url)
     .success(function(response) {
       $scope.ip = response.ip;
-      console.log($scope.ip);
     })
     .error(function(error) {
       $scope.ip = 'ip not recognized'
@@ -176,18 +175,14 @@ function QuestController ($scope, $translate, $http, tasks, pouchService) {
 
 
   $scope.setValue = function(value){
-    console.log(value);
     if (value == 'Female'){
       $scope.gender = $scope.genders.female;
-      console.log($scope.gender);
     } else {
       $scope.gender = $scope.genders.male;
-      console.log('selecting male');
     }
   };
 
   $scope.submitQuest = function(){
-    console.log($scope.gender);
     if($scope.tasks){
       localDB.post({
         tasks: $scope.tasks,
@@ -334,7 +329,13 @@ function pouchService () {
 
   this.localDB = new PouchDB('quest');
  // this.remoteDB = new PouchDB("http://172.16.0.25:5984/quiz");
-  this.remoteDB = new PouchDB("couchdb-ccff26.smileupps.com /quiz");
+  //this.remoteDB = new PouchDB("couchdb-ccff26.smileupps.com /quiz");
+  this.remoteDB = new PouchDB("https://elinext.cloudant.com/quiz", {
+    auth: {
+      username: 'elinext',
+      password: 'elinextquiz'
+    }
+  });
 }
 
 /**
