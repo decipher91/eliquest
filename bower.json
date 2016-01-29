@@ -7,6 +7,7 @@
   "dependencies": {
     "angular-material": "~1.0.3",
     "angular-pouchdb": "~4.1.0",
-    "Ionicons": "ionicons#~2.0.1"
+    "Ionicons": "ionicons#~2.0.1",
+    "angular-translate": "~2.9.0"
   }
 }

@@ -21,9 +21,10 @@
 
 * www/tasks.json
 
+### Admin panel with results
 
-### Behind the scenes
+* available at /#/admin (/#/ required)
 
-* Project uses two CouchDB databases - on client (by default it uses IndexDB on Chrome and FF) and server (in our case runs on localhost:5984). We save each new quiz to client DB and it tries 
-to sync with localhost if connection exists. Otherwise, syncing continues when connection is restored.
-* To access db externally, we need to replace localhost:5984 with necessary IP address
+### Localization
+
+* Uses angular-translate module, localiztion options are in www/js/app.js, in config module

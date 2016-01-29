@@ -1,12 +1,12 @@
-<ion-view view-title="Results" hide-nav-bar="false" ng-cloak="">
+<ion-view view-title="{{ 'QUIZ_TITLE' | translate}}" hide-nav-bar="false" ng-cloak="">
   <ion-content>
     <md-content class="md-padding quest-container" layout="column">
       <div flex align="right">
-        <md-switch ng-model="lang" ng-true-value="'English'" ng-false-value="'Russian'" class="md-warn">
+        <md-switch ng-model="lang" ng-true-value="'en'" ng-false-value="'ru'" class="md-warn" ng-change="changeLanguage(lang)">
           {{lang}}
         </md-switch>
       </div>
-      <h1>Current Results</h1>
+      <h1>{{ 'ADMIN_GREETING' | translate }}</h1>
 
       <div class="questions-container" flex align="row" ng-show="results.length">
         <md-card ng-repeat="result in results">
@@ -17,16 +17,12 @@
               </div>
               <md-divider></md-divider>
               <div class="results-container" ng-repeat="doc in result.doc.tasks" layout="column">
-                <div ng-if="lang==='English'">
-                  <b>{{doc.title.en}}</b>
-                </div>
-                <div ng-if="lang==='Russian'">
-                  <b>{{doc.title.ru}}</b>
+                <div>
+                  {{lang === 'en' ? doc.title.en : doc.title.ru}}
                 </div>
                 <div flex layout="row">
                   <div flex="80" layout layout-align="left">
-                    <span class="md-body-1" ng-if="lang==='English'">{{doc.text.en}}</span>
-                    <span class="md-body-1" ng-if="lang==='Russian'">{{doc.text.ru}}</span>
+                    {{lang === 'en' ? doc.text.en : doc.text.ru}}
                   </div>
                   <div flex="20" layout layout-align="right">
                     <span class="md-body-1">{{doc.rate}}</span>
@@ -38,19 +34,16 @@
               <md-divider></md-divider>
 
               <div flex>
-                <b>Gender:</b> {{result.doc.gender}}
+                <b>{{ 'GENDER' | translate}}:</b>{{lang === 'en' ? result.doc.gender.text.en : result.doc.gender.text.ru}}
               </div>
               <div flex>
-                <b>Location:</b> {{result.doc.ip}}
+                <b>{{ 'LOCATION' | translate}}</b> {{result.doc.ip}}
               </div>
               <md-divider></md-divider>
 
               <div flex align="center">
-                <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)" ng-if="lang==='English'">
-                  Remove
-                </md-button>
-                <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)" ng-if="lang==='Russian'">
-                  Удалить
+                <md-button class="md-primary md-raised" ng-click="remove(result.doc._id)">
+                  {{ 'REMOVE' | translate}}
                 </md-button>
               </div>
 
@@ -59,11 +52,8 @@
         </md-card>
 
         <div flex align="center">
-          <md-button class="md-primary md-raised" ng-click="refreshRemote()" ng-if="lang==='English'">
-            Refresh
-          </md-button>
-          <md-button class="md-primary md-raised" ng-click="refreshRemote()" ng-if="lang==='Russian'">
-            Обновить
+          <md-button class="md-primary md-raised" ng-click="refreshRemote()">
+            {{ 'REFRESH' | translate}}
           </md-button>
         </div>
       </div>

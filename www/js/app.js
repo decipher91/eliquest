@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial'])
+angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial', 'pascalprecht.translate'])
 
   .run(['pouchService',function (pouchService) {
     var localDB = pouchService.localDB;
@@ -11,13 +11,13 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
     localDB.sync(remoteDB, {live: true});
   }])
 
-  .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider',
-    function ($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider', '$translateProvider',
+    function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider, $translateProvider) {
 
       $stateProvider
 
         .state('home', {
-          url: '/home',
+          url: '/',
           templateUrl: 'templates/home.html',
           controller: 'QuestController',
           cache: false,
@@ -45,7 +45,7 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           }
         });
 
-      $urlRouterProvider.otherwise('/home');
+      $urlRouterProvider.otherwise('/');
 
       $httpProvider.useApplyAsync(true);
       $ionicConfigProvider.scrolling.jsScrolling(false);
@@ -56,5 +56,32 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
         .accentPalette('deep-purple', {
           'default': '900'
         });
+
+      $translateProvider.translations('en', {
+        QUIZ_TITLE: 'New quiz',
+        ADMIN_TITLE: 'Results',
+        GREETING: 'Welcome',
+        ADMIN_GREETING: 'Current Results',
+        INIT_BUTTON: 'Start',
+        SUBMIT_BUTTON: 'Submit',
+        GENDER: 'Gender',
+        LOCATION: 'Location',
+        REFRESH: 'Refresh',
+        REMOVE: 'Remove'
+      })
+        .translations('ru', {
+          QUIZ_TITLE: 'Новая анкета',
+          ADMIN_TITLE: 'Результаты',
+          GREETING: 'Добро пожаловать',
+          ADMIN_GREETING: 'Текущие результаты',
+          INIT_BUTTON: 'Поехали!',
+          SUBMIT_BUTTON: 'Готово',
+          GENDER: 'Пол',
+          LOCATION: 'Местоположение',
+          REFRESH: 'Обновить',
+          REMOVE: 'Удалить'
+        });
+      $translateProvider.preferredLanguage('en');
+      //$translateProvider.determinePreferredLanguage();
 
     }]);

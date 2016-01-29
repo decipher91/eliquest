@@ -1,7 +1,7 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, tasks, ip, pouchService) {
+function QuestController ($scope, $translate, $http, tasks, pouchService) {
   'use strict';
 
   var self = this;
@@ -9,7 +9,19 @@ function QuestController ($scope, tasks, ip, pouchService) {
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
 
-  $scope.ip =  ip ? ip.ip : 'ip not recognized';
+  $scope.changeLanguage = function (langKey) {
+    $translate.use(langKey);
+  };
+
+  var url = 'http://ipv4.myexternalip.com/json';
+  $http.get(url)
+    .success(function(response) {
+      $scope.ip = response.ip;
+      console.log($scope.ip);
+    })
+    .error(function(error) {
+      $scope.ip = 'ip not recognized'
+    });
 
   $scope.genders = {
     male: {
@@ -28,7 +40,7 @@ function QuestController ($scope, tasks, ip, pouchService) {
     }
   };
 
-  $scope.lang = 'English';
+  $scope.lang = 'en';
   $scope.results = [];
 
   $scope.tasks = tasks;
@@ -37,11 +49,19 @@ function QuestController ($scope, tasks, ip, pouchService) {
 
   $scope.initQuest = function(){
     $scope.questInitialized = true;
-    $scope.gender = 'Male';
+    $scope.gender = $scope.genders.male;
   };
+
 
   $scope.setValue = function(value){
     console.log(value);
+    if (value == 'Female'){
+      $scope.gender = $scope.genders.female;
+      console.log($scope.gender);
+    } else {
+      $scope.gender = $scope.genders.male;
+      console.log('selecting male');
+    }
   };
 
   $scope.submitQuest = function(){
@@ -50,13 +70,14 @@ function QuestController ($scope, tasks, ip, pouchService) {
       localDB.post({
         tasks: $scope.tasks,
         gender: $scope.gender,
-        ip: $scope.ip.ip
+        ip: $scope.ip
       }).then(function(response) {
         console.log(response);
         $scope.$apply(function () {
           $scope.tasks = tasks;
           $scope.questInitialized = false;
-          $scope.gender = 'Male';
+          $scope.gender = $scope.genders.male;
+          $scope.userGender === $scope.genders.male;
         })
       }).catch(function (err) {
         console.log(err);

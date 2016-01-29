@@ -1,13 +1,17 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function AdminController ($scope, local, remote, pouchService) {
+function AdminController ($scope, $translate, local, remote, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
 
-  $scope.lang = 'English';
+  $scope.lang = 'en';
+
+  $scope.changeLanguage = function (langKey) {
+    $translate.use(langKey);
+  };
 
   $scope.refresh = function(){
     localDB.allDocs({

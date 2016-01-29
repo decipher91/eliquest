@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial'])
+angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factories', 'quest.services', 'ngMaterial', 'pascalprecht.translate'])
 
   .run(['pouchService',function (pouchService) {
     var localDB = pouchService.localDB;
@@ -11,13 +11,13 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
     localDB.sync(remoteDB, {live: true});
   }])
 
-  .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider',
-    function ($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', '$ionicConfigProvider', '$mdThemingProvider', '$translateProvider',
+    function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $ionicConfigProvider, $mdThemingProvider, $translateProvider) {
 
       $stateProvider
 
         .state('home', {
-          url: '/home',
+          url: '/',
           templateUrl: 'templates/home.html',
           controller: 'QuestController',
           cache: false,
@@ -45,7 +45,7 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           }
         });
 
-      $urlRouterProvider.otherwise('/home');
+      $urlRouterProvider.otherwise('/');
 
       $httpProvider.useApplyAsync(true);
       $ionicConfigProvider.scrolling.jsScrolling(false);
@@ -57,6 +57,33 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           'default': '900'
         });
 
+      $translateProvider.translations('en', {
+        QUIZ_TITLE: 'New quiz',
+        ADMIN_TITLE: 'Results',
+        GREETING: 'Welcome',
+        ADMIN_GREETING: 'Current Results',
+        INIT_BUTTON: 'Start',
+        SUBMIT_BUTTON: 'Submit',
+        GENDER: 'Gender',
+        LOCATION: 'Location',
+        REFRESH: 'Refresh',
+        REMOVE: 'Remove'
+      })
+        .translations('ru', {
+          QUIZ_TITLE: 'Новая анкета',
+          ADMIN_TITLE: 'Результаты',
+          GREETING: 'Добро пожаловать',
+          ADMIN_GREETING: 'Текущие результаты',
+          INIT_BUTTON: 'Поехали!',
+          SUBMIT_BUTTON: 'Готово',
+          GENDER: 'Пол',
+          LOCATION: 'Местоположение',
+          REFRESH: 'Обновить',
+          REMOVE: 'Удалить'
+        });
+      $translateProvider.preferredLanguage('en');
+      //$translateProvider.determinePreferredLanguage();
+
     }]);
 
 /**
@@ -67,8 +94,8 @@ angular.module('quest.controllers', [])
   .controller('QuestController', QuestController)
   .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', 'tasks', 'ip', 'pouchService'];
-AdminController.$inject = ['$scope', 'local', 'remote', 'pouchService'];
+QuestController.$inject = ['$scope', '$translate', '$http', 'tasks', 'pouchService'];
+AdminController.$inject = ['$scope', '$translate', 'local', 'remote', 'pouchService'];
 
 /**
  * Created by decipher on 25.1.16.
@@ -96,7 +123,7 @@ ipService.$inject = ['$q', '$http'];
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, tasks, ip, pouchService) {
+function QuestController ($scope, $translate, $http, tasks, pouchService) {
   'use strict';
 
   var self = this;
@@ -104,7 +131,19 @@ function QuestController ($scope, tasks, ip, pouchService) {
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
 
-  $scope.ip =  ip ? ip.ip : 'ip not recognized';
+  $scope.changeLanguage = function (langKey) {
+    $translate.use(langKey);
+  };
+
+  var url = 'http://ipv4.myexternalip.com/json';
+  $http.get(url)
+    .success(function(response) {
+      $scope.ip = response.ip;
+      console.log($scope.ip);
+    })
+    .error(function(error) {
+      $scope.ip = 'ip not recognized'
+    });
 
   $scope.genders = {
     male: {
@@ -123,7 +162,7 @@ function QuestController ($scope, tasks, ip, pouchService) {
     }
   };
 
-  $scope.lang = 'English';
+  $scope.lang = 'en';
   $scope.results = [];
 
   $scope.tasks = tasks;
@@ -132,11 +171,19 @@ function QuestController ($scope, tasks, ip, pouchService) {
 
   $scope.initQuest = function(){
     $scope.questInitialized = true;
-    $scope.gender = 'Male';
+    $scope.gender = $scope.genders.male;
   };
+
 
   $scope.setValue = function(value){
     console.log(value);
+    if (value == 'Female'){
+      $scope.gender = $scope.genders.female;
+      console.log($scope.gender);
+    } else {
+      $scope.gender = $scope.genders.male;
+      console.log('selecting male');
+    }
   };
 
   $scope.submitQuest = function(){
@@ -145,13 +192,14 @@ function QuestController ($scope, tasks, ip, pouchService) {
       localDB.post({
         tasks: $scope.tasks,
         gender: $scope.gender,
-        ip: $scope.ip.ip
+        ip: $scope.ip
       }).then(function(response) {
         console.log(response);
         $scope.$apply(function () {
           $scope.tasks = tasks;
           $scope.questInitialized = false;
-          $scope.gender = 'Male';
+          $scope.gender = $scope.genders.male;
+          $scope.userGender === $scope.genders.male;
         })
       }).catch(function (err) {
         console.log(err);
@@ -165,13 +213,17 @@ function QuestController ($scope, tasks, ip, pouchService) {
 /**
  * Created by decipher on 25.1.16.
  */
-function AdminController ($scope, local, remote, pouchService) {
+function AdminController ($scope, $translate, local, remote, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
 
-  $scope.lang = 'English';
+  $scope.lang = 'en';
+
+  $scope.changeLanguage = function (langKey) {
+    $translate.use(langKey);
+  };
 
   $scope.refresh = function(){
     localDB.allDocs({
