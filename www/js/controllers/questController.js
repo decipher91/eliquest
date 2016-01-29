@@ -17,7 +17,6 @@ function QuestController ($scope, $translate, $http, tasks, pouchService) {
   $http.get(url)
     .success(function(response) {
       $scope.ip = response.ip;
-      console.log($scope.ip);
     })
     .error(function(error) {
       $scope.ip = 'ip not recognized'
@@ -54,18 +53,14 @@ function QuestController ($scope, $translate, $http, tasks, pouchService) {
 
 
   $scope.setValue = function(value){
-    console.log(value);
     if (value == 'Female'){
       $scope.gender = $scope.genders.female;
-      console.log($scope.gender);
     } else {
       $scope.gender = $scope.genders.male;
-      console.log('selecting male');
     }
   };
 
   $scope.submitQuest = function(){
-    console.log($scope.gender);
     if($scope.tasks){
       localDB.post({
         tasks: $scope.tasks,
