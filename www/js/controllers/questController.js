@@ -1,24 +1,32 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, tasks, pouchService) {
+function QuestController ($scope, tasks, ip, pouchService) {
   'use strict';
+
+  var self = this;
 
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
 
-  //$scope.ip = ip;
+  $scope.ip =  ip ? ip.ip : 'ip not recognized';
 
-  console.log(tasks);
-
-  localDB.allDocs({
-    include_docs: true,
-    attachments: true
-  }).then(function (result) {
-    console.log(result);
-  }).catch(function (err) {
-    console.log(err);
-  });
+  $scope.genders = {
+    male: {
+      value: 'Male',
+      text: {
+        ru: 'Мужчина',
+        en: 'Male'
+      }
+    },
+    female:  {
+      value: 'Female',
+      text: {
+        ru: 'Женщина',
+        en: 'Female'
+      }
+    }
+  };
 
   $scope.lang = 'English';
   $scope.results = [];
@@ -32,16 +40,24 @@ function QuestController ($scope, $rootScope, tasks, pouchService) {
     $scope.gender = 'Male';
   };
 
+  $scope.setValue = function(value){
+    console.log(value);
+  };
+
   $scope.submitQuest = function(){
+    console.log($scope.gender);
     if($scope.tasks){
       localDB.post({
         tasks: $scope.tasks,
-        gender: $scope.gender
-        //ip: $scope.ip.city + ', ' + $scope.ip.country
+        gender: $scope.gender,
+        ip: $scope.ip.ip
       }).then(function(response) {
-        $scope.tasks = tasks;
-        $scope.questInitialized = false;
-        $scope.gender = 'Male';
+        console.log(response);
+        $scope.$apply(function () {
+          $scope.tasks = tasks;
+          $scope.questInitialized = false;
+          $scope.gender = 'Male';
+        })
       }).catch(function (err) {
         console.log(err);
       });

@@ -8,14 +8,15 @@ function ipService ($q, $http) {
   return {
     get: function () {
       var result = $q.defer();
-      $http.get('http://ip-api.com/json')
-        .success(function (response) {
-          result.resolve(response);
-        })
-        .error(function (response) {
-          result.reject(response);
-        });
-      return result.promise;
+      var url = 'http://ipv4.myexternalip.com/json';
+      $http.get(url)
+        .success(function(response) {
+        result.resolve(response);
+      })
+      .error(function(error) {
+          console.log(error);
+        result.reject(error);
+      });
     }
   }
 };

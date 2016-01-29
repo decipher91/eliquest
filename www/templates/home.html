@@ -56,8 +56,13 @@
           </md-card-title>
           <md-card-content>
             <md-radio-group ng-model="gender">
-              <md-radio-button value="Male">Male</md-radio-button>
-              <md-radio-button value="Female">Female</md-radio-button>
+              <md-radio-button ng-repeat="gender in genders"
+                               ng-value="gender.value"
+                               ng-click="setValue(gender.value)">
+                {{gender.text.en}}
+                </md-radio-button>
+              <!--<md-radio-button value="Male" ng-click="setValue('Male')">Male</md-radio-button>
+              <md-radio-button value="Female" ng-click="setValue('Female')">Female</md-radio-button>-->
             </md-radio-group>
           </md-card-content>
         </md-card>

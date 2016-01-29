@@ -24,10 +24,10 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           resolve: {
             tasks: ['Quest', function (Quest) {
               return Quest.get();
-            }]
-            /*ip: ['ipService', function (ipService) {
+            }],
+            ip: ['ipService', function (ipService) {
               return ipService.get();
-            }]*/
+            }]
           }
         })
         .state('admin', {
@@ -67,8 +67,8 @@ angular.module('quest.controllers', [])
   .controller('QuestController', QuestController)
   .controller('AdminController', AdminController);
 
-QuestController.$inject = ['$scope', '$rootScope', 'tasks', 'pouchService'];
-AdminController.$inject = ['$scope', '$rootScope', 'local', 'remote', 'pouchService'];
+QuestController.$inject = ['$scope', 'tasks', 'ip', 'pouchService'];
+AdminController.$inject = ['$scope', 'local', 'remote', 'pouchService'];
 
 /**
  * Created by decipher on 25.1.16.
@@ -96,24 +96,32 @@ ipService.$inject = ['$q', '$http'];
 /**
  * Created by decipher on 25.1.16.
  */
-function QuestController ($scope, $rootScope, tasks, pouchService) {
+function QuestController ($scope, tasks, ip, pouchService) {
   'use strict';
+
+  var self = this;
 
   var localDB = pouchService.localDB;
   var remoteDB = pouchService.remoteDB;
 
-  //$scope.ip = ip;
+  $scope.ip =  ip ? ip.ip : 'ip not recognized';
 
-  console.log(tasks);
-
-  localDB.allDocs({
-    include_docs: true,
-    attachments: true
-  }).then(function (result) {
-    console.log(result);
-  }).catch(function (err) {
-    console.log(err);
-  });
+  $scope.genders = {
+    male: {
+      value: 'Male',
+      text: {
+        ru: 'Мужчина',
+        en: 'Male'
+      }
+    },
+    female:  {
+      value: 'Female',
+      text: {
+        ru: 'Женщина',
+        en: 'Female'
+      }
+    }
+  };
 
   $scope.lang = 'English';
   $scope.results = [];
@@ -127,16 +135,24 @@ function QuestController ($scope, $rootScope, tasks, pouchService) {
     $scope.gender = 'Male';
   };
 
+  $scope.setValue = function(value){
+    console.log(value);
+  };
+
   $scope.submitQuest = function(){
+    console.log($scope.gender);
     if($scope.tasks){
       localDB.post({
         tasks: $scope.tasks,
-        gender: $scope.gender
-        //ip: $scope.ip.city + ', ' + $scope.ip.country
+        gender: $scope.gender,
+        ip: $scope.ip.ip
       }).then(function(response) {
-        $scope.tasks = tasks;
-        $scope.questInitialized = false;
-        $scope.gender = 'Male';
+        console.log(response);
+        $scope.$apply(function () {
+          $scope.tasks = tasks;
+          $scope.questInitialized = false;
+          $scope.gender = 'Male';
+        })
       }).catch(function (err) {
         console.log(err);
       });
@@ -149,7 +165,7 @@ function QuestController ($scope, $rootScope, tasks, pouchService) {
 /**
  * Created by decipher on 25.1.16.
  */
-function AdminController ($scope, $rootScope, local, remote, pouchService) {
+function AdminController ($scope, local, remote, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
@@ -174,8 +190,10 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
       include_docs: true,
       attachments: true
     }).then(function (result) {
-      $scope.results = result.rows;
-      $scope.$apply();
+
+      $scope.$apply(function () {
+        $scope.results = result.rows;
+      });
     }).catch(function (err) {
       console.log(err);
     });
@@ -263,7 +281,8 @@ function pouchService () {
   'use strict';
 
   this.localDB = new PouchDB('quest');
-  this.remoteDB = new PouchDB("http://localhost:5984/quiz");
+ // this.remoteDB = new PouchDB("http://172.16.0.25:5984/quiz");
+  this.remoteDB = new PouchDB("couchdb-ccff26.smileupps.com /quiz");
 }
 
 /**
@@ -276,14 +295,15 @@ function ipService ($q, $http) {
   return {
     get: function () {
       var result = $q.defer();
-      $http.get('http://ip-api.com/json')
-        .success(function (response) {
-          result.resolve(response);
-        })
-        .error(function (response) {
-          result.reject(response);
-        });
-      return result.promise;
+      var url = 'http://ipv4.myexternalip.com/json';
+      $http.get(url)
+        .success(function(response) {
+        result.resolve(response);
+      })
+      .error(function(error) {
+          console.log(error);
+        result.reject(error);
+      });
     }
   }
 };

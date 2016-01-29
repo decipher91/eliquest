@@ -5,7 +5,7 @@ var express = require('express'),
   app = express();
 
 //set up couchDB via nano driver
-var nano = require("nano")("http://localhost:5984");
+var nano = require("nano")("http://eliquest.smileupps.com/");
 
 // create and use db
 nano.db.create('quiz');

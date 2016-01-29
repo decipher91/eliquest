@@ -1,7 +1,7 @@
 /**
  * Created by decipher on 25.1.16.
  */
-function AdminController ($scope, $rootScope, local, remote, pouchService) {
+function AdminController ($scope, local, remote, pouchService) {
   'use strict';
 
   var localDB = pouchService.localDB;
@@ -26,8 +26,10 @@ function AdminController ($scope, $rootScope, local, remote, pouchService) {
       include_docs: true,
       attachments: true
     }).then(function (result) {
-      $scope.results = result.rows;
-      $scope.$apply();
+
+      $scope.$apply(function () {
+        $scope.results = result.rows;
+      });
     }).catch(function (err) {
       console.log(err);
     });

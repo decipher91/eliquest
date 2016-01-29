@@ -24,10 +24,10 @@ angular.module('quest', ['ionic', 'pouchdb', 'quest.controllers', 'quest.factori
           resolve: {
             tasks: ['Quest', function (Quest) {
               return Quest.get();
-            }]
-            /*ip: ['ipService', function (ipService) {
+            }],
+            ip: ['ipService', function (ipService) {
               return ipService.get();
-            }]*/
+            }]
           }
         })
         .state('admin', {
